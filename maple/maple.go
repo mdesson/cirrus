@@ -141,11 +141,14 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
+
 	fmt.Printf("CURRENT:\n%v\n", current)
+
 	fmt.Println("WARNINGS:")
 	for _, w := range warnings {
 		fmt.Println(w)
 	}
+
 	fmt.Println("WEEKLY:")
 	for _, w := range weekly {
 		fmt.Println(w)
