@@ -16,3 +16,6 @@
 
 # ide files
 .idea
+
+# environment
+config.json
