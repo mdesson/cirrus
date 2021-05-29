@@ -165,7 +165,7 @@ func main() {
 	}
 
 	r := mux.NewRouter()
-	r.HandleFunc("/", handleNotFound)
+	r.NotFoundHandler = http.HandlerFunc(handleNotFound)
 	r.HandleFunc("/current", currentHandler)
 
 	address := fmt.Sprintf(":%v", config.Port)

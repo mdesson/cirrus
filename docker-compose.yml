@@ -1,0 +1,7 @@
+version: "3"
+services:
+  maple:
+    image: maple:latest
+    container_name: maple
+    ports:
+      - 8080:8080
