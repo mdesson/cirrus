@@ -5,6 +5,7 @@ type MapleConfig struct {
 	Longitude         float64 `json:"longitude"`
 	OpenWeatherApiKey string  `json:"open_weather_api_key"`
 	Unit              string  `json:"unit"`
+	Port              int     `json:"port"`
 }
 
 type CurrentConditions struct {
