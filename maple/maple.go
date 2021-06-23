@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,6 +11,7 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
 )
 
 // globals
@@ -35,6 +37,8 @@ func getConfig(filename string) error {
 
 	return nil
 }
+
+// database
 
 // controllers
 func getCurrentConditions() (WeatherData, error) {
@@ -160,8 +164,49 @@ func currentHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	err := getConfig("config.json")
 	if err != nil {
-		logError.Printf("error getting config file: %v", err)
-		os.Exit(1)
+		logError.Fatal("error getting config file:", err)
+	}
+	logInfo.Println("loaded config")
+
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		config.DBHost, config.DBPort, config.DBUser, config.DBPassword, config.DBName)
+
+	// NOTE: I never release this connection, may cause issuse later
+	db, err := sql.Open("postgres", psqlInfo)
+	if err != nil {
+		logError.Fatal("error making database connection: ", err)
+	}
+	defer db.Close()
+
+	err = db.Ping()
+	if err != nil {
+		logError.Fatal("error pinging database: ", err)
+	}
+	logInfo.Println("connected to database")
+
+	// sqlStatement1 := `CREATE TABLE temp (name TEXT);`
+	// sqlStatement2 := `INSERT INTO temp (name) VALUES ('bob');`
+	// _, err = db.Exec(sqlStatement1)
+	// if err != nil {
+	// 	logError.Fatal(err)
+	// }
+
+	// _, err = db.Exec(sqlStatement2)
+	// if err != nil {
+	// 	logError.Fatal(err)
+	// }
+
+	res, err := db.Query(`SELECT * FROM temp;`)
+	if err != nil {
+		logError.Fatal(err)
+	}
+
+	for res.Next() {
+		var name string
+		if err = res.Scan(&name); err != nil {
+			logError.Fatal(err)
+		}
+		logInfo.Println(name)
 	}
 
 	r := mux.NewRouter()
@@ -169,7 +214,7 @@ func main() {
 	r.HandleFunc("/current", currentHandler)
 
 	address := fmt.Sprintf(":%v", config.Port)
-	logInfo.Printf("Listening on port %v", address)
+	logInfo.Printf("listening on port %v", address)
 	log.Fatal(http.ListenAndServe(address, r))
 
 }

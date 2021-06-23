@@ -6,6 +6,11 @@ type MapleConfig struct {
 	OpenWeatherApiKey string  `json:"open_weather_api_key"`
 	Unit              string  `json:"unit"`
 	Port              int     `json:"port"`
+	DBHost            string  `json:"db_host"`
+	DBPort            int     `json:"db_port"`
+	DBUser            string  `json:"db_user"`
+	DBPassword        string  `json:"db_password"`
+	DBName            string  `json:"db_name"`
 }
 
 type CurrentConditions struct {
