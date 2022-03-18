@@ -1,4 +1,4 @@
-module cirrus
+module github.com/mdesson/cirrus
 
 go 1.16
 
