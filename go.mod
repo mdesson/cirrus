@@ -1,4 +1,4 @@
-module Cirrus
+module cirrus
 
 go 1.16
 
